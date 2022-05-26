@@ -4,9 +4,8 @@
 #define INC_22_DZ03_LIBRARY_HPP
 
 #include <list>
-#include <map>
 #include <unordered_map>
-#include <vector>
+#include <algorithm>
 
 #include "Book.hpp"
 #include "LibraryErrors.hpp"
@@ -23,7 +22,6 @@ public:
     Library();
     explicit Library(std::string &);
     void setName(std::string &);
-    std::pair<std::string, size_t> get() const;
     std::string getName() const;
     size_t getNum() const;
     void AddVisitor(std::string &);
@@ -35,8 +33,24 @@ public:
     void GetBook(std::string &, size_t);
     void ReturnBook(std::string &, size_t);
 
+    void Sort(size_t);
+
+    void Edit(size_t, size_t, size_t);
+
+    void Search_Auth(std::string &);
+    void Search_Name(std::string &);
+    void Search_Year(int);
+    void Search_Publisher(std::string &);
+    void Search_ISBN(size_t);
+
+    Library *operator + (const Book &);
+    Library *operator - (const Book &);
+
     bool BookAv(size_t);
-    bool VisitorAv(std::string &);
+    bool VisitorAv(const std::string &);
+    static bool Auth_(const Book &, const Book &);
+    static bool Name_(const Book &, const Book &);
+    static bool Year_(const Book &, const Book &);
 
     friend std::ostream &operator<<(std::ostream &, const Library &);
 };

@@ -14,7 +14,8 @@ public:
     LibraryVisitor();
     explicit LibraryVisitor(std::string &);
     ~LibraryVisitor();
-    [[nodiscard]] std::string getName() const;
+    [[nodiscard]] const char* getName() const;
+    bool empty();
     void AddBook(const Book &);
     void RemoveBook(size_t);
 

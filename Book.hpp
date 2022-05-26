@@ -27,6 +27,7 @@ public:
     [[nodiscard]] std::pair<std::string, std::string> getInfo() const;
     [[nodiscard]] size_t getISBN() const;
     [[nodiscard]] size_t getYear() const;
+    [[nodiscard]] std::string getPub() const;
     friend std::ostream &operator<<(std::ostream &, const Book &);
 };
 

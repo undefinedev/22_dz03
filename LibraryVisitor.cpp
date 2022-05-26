@@ -8,8 +8,12 @@ LibraryVisitor::LibraryVisitor(std::string &name) : Name(std::move(name)) {}
 
 LibraryVisitor::~LibraryVisitor() = default;
 
-std::string LibraryVisitor::getName() const {
-    return Name;
+const char* LibraryVisitor::getName() const {
+    return Name.c_str();
+}
+
+bool LibraryVisitor::empty() {
+    return Books.empty();
 }
 
 void LibraryVisitor::AddBook(const Book &book) {
@@ -20,7 +24,7 @@ void LibraryVisitor::RemoveBook(size_t isbn) {
     auto temp = std::find_if(Books.begin(), Books.end(),
                              [&isbn](const Book &t) { return t.getISBN() == isbn; });
     if (temp == Books.end() && temp->getISBN() != isbn) {
-        throw LibraryErrors("У этого посетителя нет данной книги");
+        throw LibraryErrors("У этого посетителя нет данной книги\n");
     }
     Books.erase(temp);
 }
