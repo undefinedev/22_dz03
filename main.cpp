@@ -1,8 +1,8 @@
 #include <fstream>
+#include <future>
 
 #include "Book.hpp"
 #include "Library.hpp"
-#include "windows.h"
 
 void Read(std::map<size_t, Book> &books, std::string &filename) {
     std::ifstream in(filename);
@@ -33,19 +33,28 @@ void PrintAvBooks(std::map<size_t, Book> &books) {
     }
 }
 
+bool AnyLibs(std::vector<Library> &libs, size_t choice) {
+    return libs.empty() || choice > libs.size();
+}
+
 void PrintLib(std::vector<Library> &libs) {
     size_t count = 0;
     for (const auto &i: libs) {
-        std::cout << ++count << " " << i.getName() << "  " << i.getNum() << " книг.\n";
+        std::cout << ++count << " " << i.getName() << "  " << i.getNum();
+        if (i.getNum() % 10 == 1) {
+            std::cout << " книгa.\n";
+        } else if (i.getNum() % 10 == 2 || i.getNum() % 10 == 3 || i.getNum() % 10 == 4) {
+            std::cout << " книги.\n";
+        } else {
+            std::cout << " книг.\n";
+        }
     }
 }
 
 int main() {
-    //SetConsoleOutputCP(CP_UTF8);
-    //SetConsoleCP(1251);
-    SetConsoleCP(CP_UTF8); SetConsoleOutputCP(CP_UTF8);
-
     bool work = true;
+    std::string in = "input.txt";
+    std::string out = "output.txt";
     size_t choice;
     size_t lib_choice;
     size_t book_choice;
@@ -60,10 +69,11 @@ int main() {
     std::map<size_t, Book> books;
     std::vector<Library> libs;
     while (work) {
-        std::cout << "1 - выбор библиотеки по умолчанию; 2 - печать всех библиотек; 3 - печать доступных книг;"
-                     "4 - добавление книги;\n5 - удаление книги; 6 - печать книг в библиотеке;"
-                     "7 - поиск книги; 8 - редактирование книги;\n9 - чтение из файла;"
-                     "10 - запись книг библиотеки в файл;"
+        std::cout << "1 - добавление и выбор библиотеки; 2 - печать всех библиотек; 3 - печать доступных книг;"
+                     " 4 - добавление книги;\n5 - удаление книги; 6 - печать книг в библиотеке;"
+                     " 7 - поиск книги; 8 - редактирование книги;\n9 - чтение из файла;"
+                     " 10 - запись книг библиотеки в файл; 11 - взять книгу; 12 - сдать книгу;"
+                     "\n13 - действия с посетителями; 14 - список посетителей;"
                      "\n0 - выход\n";
         std::cin >> choice;
         if (!std::cin) {
@@ -105,31 +115,160 @@ int main() {
                 PrintAvBooks(books);
                 break;
             case 4:
-                std::cout << "Введите ISBN книги или создайте новую, введя"
-                             "\nISBN >> Автор >> Название >> Год >> Издательство >> Тираж >> Число страниц";
-                std::cin >> ISBN;
-                std::getline(std::cin, Author);
-                if (Author.empty()) {
-                    libs[lib_choice - 1].AddBook(books[ISBN]);
+                if (AnyLibs(libs, lib_choice)) {
+                    std::cout << "Нет библиотеки\n";
                     break;
                 }
-                std::cin.sync();
-                std::getline(std::cin, Name);
-                std::cin >> Year;
-                std::getline(std::cin, Publisher);
-                std::cin >> Copies;
-                std::cin >> PageCount;
+                std::cout << "Введите ISBN книги и 0 через Enter или создайте новую, введя"
+                             "\nISBN >> Автор >> Название >> Год >> Издательство >> Тираж >> Число страниц\n";
+                std::cin >> ISBN >> Author;
                 if (!std::cin) {
                     std::cin.clear();
                     std::cout << "Вводите цифры!!!" << std::endl;
                     Author.clear();
                     break;
                 }
+                if (Author == "0" && books.contains(ISBN)) {
+                    try {
+                        libs[lib_choice - 1].AddBook(books[ISBN]);
+                    } catch (LibraryErrors &e) {
+                        std::cout << e.what();
+                        Author.clear();
+                    }
+                    break;
+                } else if (Author == "0") {
+                    std::cout << "Нет такой книги\n";
+                    break;
+                }
+                std::cin >> Name >> Year >> Publisher >> Copies >> PageCount;
+                if (!std::cin) {
+                    std::cin.clear();
+                    std::cout << "Вводите цифры!!!" << std::endl;
+                    break;
+                }
                 try {
-                    libs[lib_choice - 1].AddBook(Book(Author, Name, Year, Publisher, Copies, PageCount, ISBN));
+                    auto tempB = Book(Author, Name, Year, Publisher, Copies, PageCount, ISBN);
+                    books.insert({ISBN, tempB});
+                    libs[lib_choice - 1].AddBook(tempB);
+                } catch (LibraryErrors &e) {
+                    std::cout << e.what();
+                    Author.clear();
+                }
+                break;
+            case 5:
+                if (AnyLibs(libs, lib_choice)) {
+                    std::cout << "Нет библиотек\n";
+                    break;
+                }
+                std::cout << "Введите ISBN книги, которую хотите удалить\n";
+                std::cin >> ISBN;
+                if (!std::cin) {
+                    std::cin.clear();
+                    std::cout << "Вводите цифры!!!" << std::endl;
+                    break;
+                }
+                try {
+                    libs[lib_choice - 1].RemoveBook(ISBN);
                 } catch (LibraryErrors &e) {
                     std::cout << e.what();
                 }
+                break;
+            case 6:
+                if (AnyLibs(libs, lib_choice)) {
+                    std::cout << "Нет библиотек\n";
+                    break;
+                }
+                std::cout << libs[lib_choice - 1];
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                Read(books, in);
+                break;
+            case 10:
+                if (AnyLibs(libs, lib_choice)) {
+                    std::cout << "Нет библиотек\n";
+                    break;
+                }
+                Write(libs[lib_choice - 1], out);
+                break;
+            case 11:
+                if (AnyLibs(libs, lib_choice)) {
+                    std::cout << "Нет библиотек\n";
+                    break;
+                }
+                std::cout << "Введите имя пользователя: ";
+                std::cin >> temp;
+                std::cout << "\nВведите ISBN: ";
+                std::cin >> ISBN;
+                if (!std::cin) {
+                    std::cin.clear();
+                    std::cout << "Вводите цифры!!!" << std::endl;
+                    break;
+                }
+                try {
+                    libs[lib_choice - 1].GetBook(temp, ISBN);
+                } catch (LibraryErrors &e) {
+                    std::cout << e.what();
+                }
+                break;
+            case 12:
+                if (AnyLibs(libs, lib_choice)) {
+                    std::cout << "Нет библиотек\n";
+                    break;
+                }
+                std::cout << "Введите имя пользователя: ";
+                std::cin >> temp;
+                std::cout << "\nВведите ISBN: ";
+                std::cin >> ISBN;
+                if (!std::cin) {
+                    std::cin.clear();
+                    std::cout << "Вводите цифры!!!" << std::endl;
+                    break;
+                }
+                try {
+                    libs[lib_choice - 1].ReturnBook(temp, ISBN);
+                } catch (LibraryErrors &e) {
+                    std::cout << e.what();
+                }
+            case 13:
+                if (AnyLibs(libs, lib_choice)) {
+                    std::cout << "Нет библиотек\n";
+                    break;
+                }
+                std::cout << "1 - добавить посетителя\n2 - удалить посетителя\n3 - напечатать книги посетителя\n";
+                std::cin >> choice;
+                if (!std::cin) {
+                    std::cin.clear();
+                    std::cout << "Вводите цифры!!!" << std::endl;
+                    break;
+                }
+
+                std::cout << "Введите имя посетителя\n";
+                std::cin >> temp;
+                try {
+                    if (choice == 1) {
+                        libs[lib_choice - 1].AddVisitor(temp);
+                        break;
+                    } else if (choice == 2){
+                        libs[lib_choice - 1].RemoveVisitor(temp);
+                        break;
+                    } else if (choice == 3) {
+                        libs[lib_choice - 1].PrintVisitor(temp);
+                        break;
+                    }
+                } catch (LibraryErrors &e) {
+                    std::cout << e.what();
+                    break;
+                }
+            case 14:
+                if (AnyLibs(libs, lib_choice)) {
+                    std::cout << "Нет библиотек\n";
+                    break;
+                }
+                libs[lib_choice - 1].PrintVisitors();
                 break;
             case 0:
                 work = false;

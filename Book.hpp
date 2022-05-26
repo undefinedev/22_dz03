@@ -26,6 +26,7 @@ public:
     void get(std::string &, std::string &, int &, std::string &, size_t &, size_t &, size_t &) const;
     [[nodiscard]] std::pair<std::string, std::string> getInfo() const;
     [[nodiscard]] size_t getISBN() const;
+    [[nodiscard]] size_t getYear() const;
     friend std::ostream &operator<<(std::ostream &, const Book &);
 };
 

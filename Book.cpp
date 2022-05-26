@@ -58,9 +58,13 @@ size_t Book::getISBN() const {
     return ISBN;
 }
 
+size_t Book::getYear() const {
+    return Year;
+}
+
 std::ostream &operator<<(std::ostream &out, const Book &book) {
-    out << book.Author << "  " << book.Name << "  "
-        << "\nИздательство " << book.Publisher << "  Год издания " << book.Year
+    out << book.Author << " " << book.Name << "  "
+        << "\nИздательство " << book.Publisher << " Год издания " << book.Year
         << "\nЧисло страниц: " << book.PageCount << "\nТираж " << book.Copies << " экз."
         << "\nISBN " << book.ISBN << "\n\n" << std::endl;
     return out;

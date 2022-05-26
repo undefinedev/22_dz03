@@ -12,12 +12,18 @@ void Library::setName(std::string &name) {
 }
 
 bool Library::BookAv(size_t isbn) {
+    if (Books.empty()) {
+        return false;
+    }
     return std::find_if(Books.begin(), Books.end(),
                         [isbn](const Book &t) { return t.getISBN() == isbn; })
                    ->getISBN() == isbn;
 }
 
 bool Library::VisitorAv(std::string &name) {
+    if (Visitors.empty()) {
+        return false;
+    }
     return std::find_if(Visitors.begin(), Visitors.end(),
                         [&name](const LibraryVisitor &t) { return t.getName() == name; })
                    ->getName() == name;
@@ -29,14 +35,14 @@ std::pair<std::string, size_t> Library::get() const {
 
 void Library::AddVisitor(std::string &name) {
     if (VisitorAv(name)) {
-        throw LibraryErrors("Такой пользователь уже зарегистрирован");
+        throw LibraryErrors("Такой пользователь уже зарегистрирован\n\n");
     }
     Visitors.emplace_back(name);
 }
 
 void Library::PrintVisitors() {
     if (Visitors.empty()) {
-        std::cout << "Нет посетителей" << std::endl;
+        std::cout << "Нет посетителей\n\n" << std::endl;
     }
     for (const auto &i: Visitors) {
         std::cout << i;
@@ -47,7 +53,7 @@ void Library::PrintVisitor(std::string &name) {
     auto temp = std::find_if(Visitors.begin(), Visitors.end(),
                              [&name](const LibraryVisitor &t) { return t.getName() == name; });
     if (temp == Visitors.end() && temp->getName() != name) {
-        throw LibraryErrors("В системе нет такого пользователя");
+        throw LibraryErrors("В системе нет такого пользователя\n\n");
     }
     std::cout << *temp;
 }
@@ -56,14 +62,14 @@ void Library::RemoveVisitor(std::string &name) {
     auto temp = std::find_if(Visitors.begin(), Visitors.end(),
                              [&name](const LibraryVisitor &t) { return t.getName() == name; });
     if (temp == Visitors.end() && temp->getName() != name) {
-        throw LibraryErrors("В системе нет такого пользователя");
+        throw LibraryErrors("В системе нет такого пользователя\n\n");
     }
     Visitors.erase(temp);
 }
 
 void Library::AddBook(const Book &book) {
     if (BookAv(book.getISBN())) {
-        throw LibraryErrors("Книга не добавлена в библиотеку, так как уже имеется");
+        throw LibraryErrors("Книга не добавлена в библиотеку, так как уже имеется\n\n");
     }
     Books.push_back(book);
     AccountBooks.insert({book.getISBN(), false});
@@ -73,7 +79,7 @@ void Library::AddBook(const Book &book) {
 void Library::RemoveBook(size_t isbn) {
     auto temp = std::find_if(Books.begin(), Books.end(), [isbn](const Book &t) { return t.getISBN() == isbn; });
     if (temp == Books.end() && temp->getISBN() != isbn) {
-        throw LibraryErrors("Нет такой книги");
+        throw LibraryErrors("Нет такой книги\n\n");
     }
     Books.erase(temp);
     AccountBooks.erase(isbn);
@@ -88,10 +94,10 @@ void Library::GetBook(std::string &name, size_t isbn) {
     auto tempB = std::find_if(Visitors.begin(), Visitors.end(),
                              [&name](const LibraryVisitor &t) { return t.getName() == name; });
     if (temp == Books.end() && temp->getISBN() != isbn) {
-        throw LibraryErrors("Нет такой книги");
+        throw LibraryErrors("Нет такой книги\n\n");
     }
     if (AccountBooks[isbn]) {
-        throw LibraryErrors("Книга уже не имеется в наличии");
+        throw LibraryErrors("Книга уже не имеется в наличии\n\n");
     }
     tempB->AddBook(*temp);
     AccountBooks[isbn] = true;
@@ -99,11 +105,11 @@ void Library::GetBook(std::string &name, size_t isbn) {
 
 void Library::ReturnBook(std::string &name, size_t isbn) {
     if (!VisitorAv(name)) {
-        throw LibraryErrors("В системе нет такого пользователя");
+        throw LibraryErrors("В системе нет такого пользователя\n\n");
     }
     auto temp = std::find_if(Books.begin(), Books.end(), [isbn](const Book &t) { return t.getISBN() == isbn; });
     if (!BookAv(isbn)) {
-        throw LibraryErrors("Нет такой книги");
+        throw LibraryErrors("Нет такой книги\n\n");
     }
     auto tempB = std::find_if(Visitors.begin(), Visitors.end(),
                               [&name](const LibraryVisitor &t) { return t.getName() == name; });
