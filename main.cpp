@@ -59,7 +59,6 @@ int main() {
     std::string out = "output.txt";
     size_t choice;
     size_t lib_choice;
-    size_t book_choice;
     std::string temp;
     std::string Author;
     std::string Name;
@@ -136,7 +135,7 @@ int main() {
                 }
                 if (Author == "0" && books.contains(ISBN)) {
                     try {
-                        main->AddBook(books[ISBN]);
+                        *main + books[ISBN];
                     } catch (LibraryErrors &e) {
                         std::cout << e.what();
                         Author.clear();
@@ -155,7 +154,7 @@ int main() {
                 try {
                     auto tempB = Book(Author, Name, Year, Publisher, Copies, PageCount, ISBN);
                     books.insert({ISBN, tempB});
-                    main->AddBook(tempB);
+                    *main + tempB;
                 } catch (LibraryErrors &e) {
                     std::cout << e.what();
                     Author.clear();
@@ -199,7 +198,7 @@ int main() {
                     std::cout << "Нет библиотек\n";
                     break;
                 }
-                std::cout <<"1 - поиск по автору\n2 - поиск по названию\n3 - поиск по году\n4 - поиск по издательству\n5 - поиск по ISBN\n";
+                std::cout << "1 - поиск по автору\n2 - поиск по названию\n3 - поиск по году\n4 - поиск по издательству\n5 - поиск по ISBN\n";
                 std::cin >> choice;
                 if (!std::cin) {
                     std::cin.clear();
@@ -279,14 +278,14 @@ int main() {
                 }
                 break;
             case 9:
-                Read(books, in);
+                std::future(std::async(std::launch::async, Read, std::ref(books), std::ref(in)));
                 break;
             case 10:
                 if (AnyLibs(libs, lib_choice)) {
                     std::cout << "Нет библиотек\n";
                     break;
                 }
-                Write(*main, out);
+                std::future(std::async(std::launch::async, Write, *main, std::ref(out)));
                 break;
             case 11:
                 if (AnyLibs(libs, lib_choice)) {
@@ -345,7 +344,7 @@ int main() {
                 try {
                     if (choice == 1) {
                         main->AddVisitor(temp);
-                    } else if (choice == 2){
+                    } else if (choice == 2) {
                         main->RemoveVisitor(temp);
                     } else if (choice == 3) {
                         main->PrintVisitor(temp);

@@ -67,7 +67,7 @@ std::string Book::getPub() const {
 }
 
 std::ostream &operator<<(std::ostream &out, const Book &book) {
-    out << book.Author << " " << book.Name << "  "
+    out << book.Author << " " << book.Name
         << "\nИздательство " << book.Publisher << " Год издания " << book.Year
         << "\nЧисло страниц: " << book.PageCount << "\nТираж " << book.Copies << " экз."
         << "\nISBN " << book.ISBN << "\n" << std::endl;
