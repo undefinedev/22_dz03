@@ -5,6 +5,7 @@
 
 #include "Book.hpp"
 #include "Library.hpp"
+#include "windows.h"
 
 void Read(std::map<size_t, Book> &books, std::string &filename) {
     std::ifstream in(filename);
@@ -64,6 +65,8 @@ void PrintLib(std::vector<Library> &libs) {
 }
 
 int main() {
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
     bool work = true;
     std::string in = "input.txt";
     std::string out = "output.txt";
