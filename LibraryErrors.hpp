@@ -9,6 +9,7 @@
 
 class LibraryErrors : public std::exception {
     std::string msg;
+
 public:
     LibraryErrors() = default;
     explicit LibraryErrors(std::string msg_) : msg(std::move(msg_)) {}

@@ -8,7 +8,7 @@ LibraryVisitor::LibraryVisitor(std::string &name) : Name(std::move(name)) {}
 
 LibraryVisitor::~LibraryVisitor() = default;
 
-const char* LibraryVisitor::getName() const {
+const char *LibraryVisitor::getName() const {
     return Name.c_str();
 }
 

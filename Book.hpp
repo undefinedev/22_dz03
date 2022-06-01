@@ -3,8 +3,8 @@
 #ifndef INC_22_DZ03_BOOK_HPP
 #define INC_22_DZ03_BOOK_HPP
 
-#include <string>
 #include <iostream>
+#include <string>
 
 class Book {
     std::string Author;

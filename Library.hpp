@@ -3,9 +3,9 @@
 #ifndef INC_22_DZ03_LIBRARY_HPP
 #define INC_22_DZ03_LIBRARY_HPP
 
+#include <algorithm>
 #include <list>
 #include <unordered_map>
-#include <algorithm>
 
 #include "Book.hpp"
 #include "LibraryErrors.hpp"
@@ -43,8 +43,8 @@ public:
     void Search_Publisher(std::string &);
     void Search_ISBN(size_t);
 
-    Library *operator + (const Book &);
-    Library *operator - (const Book &);
+    Library *operator+(const Book &);
+    Library *operator-(const Book &);
 
     bool BookAv(size_t);
     bool VisitorAv(const std::string &);
