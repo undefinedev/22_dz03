@@ -39,6 +39,16 @@ bool AnyLibs(std::vector<Library> &libs, size_t choice) {
     return libs.empty() || choice > libs.size();
 }
 
+bool check(std::istream &in) {
+    if (!std::cin) {
+        std::cin.clear();
+        std::cin.ignore(10000, '\n');
+        std::cout << "Вводите цифры!!!" << std::endl;
+        return true;
+    }
+    return false;
+}
+
 void PrintLib(std::vector<Library> &libs) {
     size_t count = 0;
     for (const auto &i: libs) {
@@ -78,13 +88,7 @@ int main() {
                      "\n13 - действия с посетителями; 14 - список посетителей;"
                      "\n0 - выход\n";
         std::cin >> choice;
-        if (!std::cin) {
-            std::cin.clear();
-            std::cin.ignore(100, '\n');
-            std::cout << "Вводите цифры!!!" << std::endl;
-            choice = 0;
-            continue;
-        }
+        if (check(std::cin)) { continue; }
 
         switch (choice) {
             case 1:
@@ -94,11 +98,7 @@ int main() {
                 PrintLib(libs);
                 std::cout << "Для добавления библиотеки введите 0. Для выбора нужной введите её номер.\n";
                 std::cin >> lib_choice;
-                if (std::cin.fail()) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 if (lib_choice == 0) {
                     std::cout << "Введите название библиотеки\n";
                     std::cin.clear();
@@ -127,12 +127,7 @@ int main() {
                 std::cout << "Введите ISBN книги и 0 через Enter или создайте новую, введя"
                              "\nISBN >> Автор >> Название >> Год >> Издательство >> Тираж >> Число страниц\n";
                 std::cin >> ISBN >> Author;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    Author.clear();
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 if (Author == "0" && books.contains(ISBN)) {
                     try {
                         *main + books[ISBN];
@@ -146,11 +141,7 @@ int main() {
                     break;
                 }
                 std::cin >> Name >> Year >> Publisher >> Copies >> PageCount;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 try {
                     auto tempB = Book(Author, Name, Year, Publisher, Copies, PageCount, ISBN);
                     books.insert({ISBN, tempB});
@@ -167,11 +158,7 @@ int main() {
                 }
                 std::cout << "Введите ISBN книги, которую хотите удалить\n";
                 std::cin >> ISBN;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 try {
                     main->RemoveBook(ISBN);
                 } catch (LibraryErrors &e) {
@@ -185,11 +172,7 @@ int main() {
                 }
                 std::cout << "0 - обычная печать\n1 - Сортировка по автору\n2 - Сортировка по названию\n3 - Сортировка по году\n";
                 std::cin >> choice;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 main->Sort(choice);
                 std::cout << *main;
                 break;
@@ -200,11 +183,7 @@ int main() {
                 }
                 std::cout << "1 - поиск по автору\n2 - поиск по названию\n3 - поиск по году\n4 - поиск по издательству\n5 - поиск по ISBN\n";
                 std::cin >> choice;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 switch (choice) {
                     case 1:
                         std::cout << "Введите имя автора: ";
@@ -219,11 +198,7 @@ int main() {
                     case 3:
                         std::cout << "Введите год: ";
                         std::cin >> Year;
-                        if (!std::cin) {
-                            std::cin.clear();
-                            std::cout << "Вводите цифры!!!" << std::endl;
-                            break;
-                        }
+                        if (check(std::cin)) { break; }
                         main->Search_Year(Year);
                         break;
                     case 4:
@@ -234,11 +209,7 @@ int main() {
                     case 5:
                         std::cout << "Введите ISBN: ";
                         std::cin >> ISBN;
-                        if (!std::cin) {
-                            std::cin.clear();
-                            std::cout << "Вводите цифры!!!" << std::endl;
-                            break;
-                        }
+                        if (check(std::cin)) { break; }
                         main->Search_ISBN(ISBN);
                         break;
                     default:
@@ -252,25 +223,13 @@ int main() {
                 }
                 std::cout << "1 - редактирование года\n2 - редактирование тиража\n";
                 std::cin >> choice;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 std::cout << "ISBN: ";
                 std::cin >> ISBN;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 std::cout << "Введите нужное значение\n";
                 std::cin >> Year;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 try {
                     main->Edit(ISBN, choice, Year);
                 } catch (LibraryErrors &e) {
@@ -296,11 +255,7 @@ int main() {
                 std::cin >> temp;
                 std::cout << "\nВведите ISBN: ";
                 std::cin >> ISBN;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 try {
                     main->GetBook(temp, ISBN);
                 } catch (LibraryErrors &e) {
@@ -316,11 +271,7 @@ int main() {
                 std::cin >> temp;
                 std::cout << "\nВведите ISBN: ";
                 std::cin >> ISBN;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 try {
                     main->ReturnBook(temp, ISBN);
                 } catch (LibraryErrors &e) {
@@ -334,11 +285,7 @@ int main() {
                 }
                 std::cout << "1 - добавить посетителя\n2 - удалить посетителя\n3 - напечатать книги посетителя\n";
                 std::cin >> choice;
-                if (!std::cin) {
-                    std::cin.clear();
-                    std::cout << "Вводите цифры!!!" << std::endl;
-                    break;
-                }
+                if (check(std::cin)) { break; }
                 std::cout << "Введите имя посетителя\n";
                 std::cin >> temp;
                 try {
@@ -369,6 +316,5 @@ int main() {
                 std::cin.ignore(100, '\n');
         }
     }
-    std::cout << "Hello, World!" << std::endl;
     return 0;
 }
