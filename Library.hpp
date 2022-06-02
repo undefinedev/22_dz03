@@ -43,8 +43,8 @@ public:
     void Search_Publisher(std::string &);
     void Search_ISBN(size_t);
 
-    Library *operator+(const Book &);
-    Library *operator-(const Book &);
+    Library &operator+(const Book &);
+    Library &operator-(const Book &);
 
     bool BookAv(size_t);
     bool VisitorAv(const std::string &);

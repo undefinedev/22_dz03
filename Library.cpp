@@ -192,14 +192,14 @@ void Library::Edit(size_t isbn, size_t choice, size_t val) {
     }
 }
 
-Library *Library::operator+(const Book &book) {
+Library &Library::operator+(const Book &book) {
     AddBook(book);
-    return this;
+    return *this;
 }
 
-Library *Library::operator-(const Book &book) {
+Library &Library::operator-(const Book &book) {
     RemoveBook(book.getISBN());
-    return this;
+    return *this;
 }
 
 std::ostream &operator<<(std::ostream &out, const Library &lib) {
