@@ -4,6 +4,7 @@
 #define INC_22_DZ03_LIBRARYVISITOR_HPP
 
 #include <list>
+#include <algorithm>
 
 #include "Book.hpp"
 #include "LibraryErrors.hpp"
